@@ -1,5 +1,7 @@
 # ssm-diff
 
+> [addition in fork] This is a fork with added option to set KMS KeyID instead of using default SSM key. Set the KMS KeyID by setting the environment variable `SSMDIFF_KMS_KEY_ID`: `export SSMDIFF_KMS_KEY_ID=arn:aws:kms:...`. This will the be used when adding or updating a parameter.
+
 AWS [SSM Parameter Store](https://aws.amazon.com/ec2/systems-manager/parameter-store) is a really convenient, AWS-native, KMS-enabled storage for parameters and secrets. 
 
 Unfortunately, as of now, it doesn't seem to provide any human-friendly ways of batch-managing [hierarchies of parameters](http://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-working.html#sysman-paramstore-su-organize).
@@ -17,9 +19,11 @@ Then, given that this local YAML representation of the SSM Parameter Store state
 
 `ssm-diff` supports complex data types as values and can operate within single or multiple prefixes.
 
+
 ## Installation
+> [addition in fork] install directly from git repo
 ```
-pip install ssm-diff
+pip install git+https://github.com/torson/ssm-diff.git
 ```
 
 ## Geting Started

@@ -124,10 +124,19 @@ class RemoteState(object):
                 ssm_type = 'StringList'
             if isinstance(diff.target[k], SecureTag):
                 ssm_type = 'SecureString'
-            self.ssm.put_parameter(
-                Name=k,
-                Value=repr(diff.target[k]) if type(diff.target[k]) == SecureTag else str(diff.target[k]),
-                Type=ssm_type)
+            if 'SSMDIFF_KMS_KEY_ID' in os.environ:
+                keyId = os.environ['SSMDIFF_KMS_KEY_ID']
+                print('Using KMS key ARN :', keyId)
+                self.ssm.put_parameter(
+                    Name=k,
+                    Value=repr(diff.target[k]) if type(diff.target[k]) == SecureTag else str(diff.target[k]),
+                    KeyId=keyId,
+                    Type=ssm_type)
+            else:
+                self.ssm.put_parameter(
+                    Name=k,
+                    Value=repr(diff.target[k]) if type(diff.target[k]) == SecureTag else str(diff.target[k]),
+                    Type=ssm_type)
 
         for k in diff.removed():
             self.ssm.delete_parameter(Name=k)
@@ -135,8 +144,18 @@ class RemoteState(object):
         for k in diff.changed():
             ssm_type = 'SecureString' if isinstance(diff.target[k], SecureTag) else 'String'
 
-            self.ssm.put_parameter(
-                Name=k,
-                Value=repr(diff.target[k]) if type(diff.target[k]) == SecureTag else str(diff.target[k]),
-                Overwrite=True,
-                Type=ssm_type)
+            if 'SSMDIFF_KMS_KEY_ID' in os.environ:
+                keyId = os.environ['SSMDIFF_KMS_KEY_ID']
+                print('Using KMS key ARN :', keyId)
+                self.ssm.put_parameter(
+                    Name=k,
+                    Value=repr(diff.target[k]) if type(diff.target[k]) == SecureTag else str(diff.target[k]),
+                    KeyId=keyId,
+                    Overwrite=True,
+                    Type=ssm_type)
+            else:
+                self.ssm.put_parameter(
+                    Name=k,
+                    Value=repr(diff.target[k]) if type(diff.target[k]) == SecureTag else str(diff.target[k]),
+                    Overwrite=True,
+                    Type=ssm_type)
